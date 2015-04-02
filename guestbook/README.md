@@ -8,6 +8,6 @@ How to run
 
 1. Make sure to have the Google App Engine SDK installed (The GO version, https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Go)
 
-2. run the program
-    /path_to_appengine/goapp server /path_to/guestbook/
+2. run the program:
 
+        /path_to_appengine/goapp server /path_to/guestbook/
