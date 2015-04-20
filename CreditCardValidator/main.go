@@ -99,6 +99,9 @@ func main() {
   validatenumber(ccv_number)
   fmt.Println("=============================================")
 
-  //go through cc brands and validate (switch/case statements)
+  //go through cc brands and validate
   cc_validate(cc_brand, cc_number, ccv_number)
+  
+  //use luhn's algorithm to verify cc number is valid
+  luhns_algorithm(cc_number)
 }

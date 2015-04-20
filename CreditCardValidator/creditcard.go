@@ -4,6 +4,7 @@ import (
     "fmt"
     "regexp"
     "os"
+    "strconv"
     )
 
 // create struct to hold credit card values
@@ -79,7 +80,7 @@ func cc_validate(cc_brand int, cc_number string, ccv_number string) {
     //validate the credit card values
     fmt.Println("Credit card carrier chosen is: ", creditcards[i].brand)
 
-    //validate cc number pattern
+    //validate cc number pattern (cc number starts with...)
     pattern_check := regexp.MustCompile(creditcards[i].number_pattern)
     pattern_result := pattern_check.MatchString(cc_number)
     if (pattern_result){
@@ -109,6 +110,65 @@ func cc_validate(cc_brand int, cc_number string, ccv_number string) {
         fmt.Println("Now exiting...")
         os.Exit(4)
     }
+}
 
+//use Luhn's algorithm to verify cc number is valid
+/*
+  http://www.freeformatter.com/credit-card-number-generator-validator.html
+
+  - Drop the last digit from the number. The last digit is what we want to
+    check against
+  - Reverse the numbers
+  - Multiply the digits in odd positions (1, 3, 5, etc.) by 2 and subtract 9
+    to all any result higher than 9
+  - Add all the numbers together
+  - The check digit (the last number of the card) is the amount that you
+    would need to add to get a multiple of 10 (Modulo 10)
+*/
+func luhns_algorithm(input string){
+
+    //variables
+    sum := 0
+
+    //drop the last digit
+    last_char := input[len(input)-1:]
+    input = input[0:len(input)-1]
+
+
+    //fmt.Println("last character: ", last_char)
+    //fmt.Println("stripped input: ", input)
+
+    //reverse the string
+    r := []rune(input)
+    for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    //fmt.Println(string(r))
+
+    for i := 0; i <= len(r)-1; i=i+1{
+        mod, _ := strconv.Atoi(string(r[i]))
+
+        //all the odd numbers
+        if (i%2 == 0){
+            mod = mod * 2
+            if (mod > 9){
+                mod = mod - 9
+            }
+        }
+        //fmt.Println("value is: ", mod)
+        sum = sum + mod
+    }
+    //fmt.Println("sum is: ", sum)
+    last, _ := strconv.Atoi(string(last_char))
+    modulo := sum % 10
+    fmt.Println(modulo)
+
+    if (modulo == last){
+        fmt.Println("valid credit card")
+    }else {
+        fmt.Println("invalid credit card number")
+        fmt.Println("Now exiting...")
+        os.Exit(5)
+    }
 
 }
