@@ -23,9 +23,9 @@ The following list of credit cards are ACTIVE credit cards found on the wikipedi
     
 ## Files
 ../
-    main.go
-    creditcard.go
-    errors.go
+  |--main.go
+  |--creditcard.go
+  |--errors.go
 
 ## How to run:
 To run the application, run the following command:
