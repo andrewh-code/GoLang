@@ -7,19 +7,19 @@ ccv numbers found in the most popular credit card brands in the world
 ## Supported Credit CArds
 The following list of credit cards are ACTIVE credit cards found on the wikipedia page (http://en.wikipedia.org/wiki/Bank_card_number)
 
-    - American Express
-    - China Unionpay
-    - Dankort
-    - Diners Club Carte Blanche
-    - Diners Club International
-    - Discover
-    - InterPayment
-    - InstaPayment
-    - JCB
-    - Maestro
-    - MasterCard
-    - Visa
-    - Visa Electron
+  - American Express
+  - China Unionpay
+  - Dankort
+  - Diners Club Carte Blanche
+  - Diners Club International
+  - Discover
+  - InterPayment
+  - InstaPayment
+  - JCB
+  - Maestro
+  - MasterCard
+  - Visa
+  - Visa Electron
     
 ## Files
 ../
@@ -30,4 +30,6 @@ The following list of credit cards are ACTIVE credit cards found on the wikipedi
 ## How to run:
 To run the application, run the following command:
 
-    go run main.go creditcard.go
+```sh
+$ go run main.go creditcard.go
+```
