@@ -129,7 +129,7 @@ func luhns_algorithm(input string) bool{
 
     //variables
     sum := 0
-
+    mod := 0
     //drop the last digit
     last_char := input[len(input)-1:]
     input = input[0:len(input)-1]
@@ -146,22 +146,26 @@ func luhns_algorithm(input string) bool{
     fmt.Println(string(r))
 
     for i := 0; i <= len(r)-1; i=i+1{
-        mod, _ := strconv.Atoi(string(r[i]))
+        mod2, _ := strconv.Atoi(string(r[i]))
 
         //all the odd numbers
         if (i%2 == 0){
-            mod = mod * 2
+            mod = mod2 * 2
+
             if (mod > 9){
                 mod = mod - 9
             }
+        }else{
+          mod = mod2
         }
-        fmt.Println("value is: ", mod)
+
+        fmt.Println("value is: ", mod2, mod)
         sum = sum + mod
     }
     //fmt.Println("sum is: ", sum)
     last, _ := strconv.Atoi(string(last_char))
     modulo := sum % 10
-    fmt.Println(modulo)
+    fmt.Println("modulo is: ", modulo)
 
     if (modulo == last){
         fmt.Println("valid credit card")
