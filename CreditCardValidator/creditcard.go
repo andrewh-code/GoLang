@@ -125,7 +125,7 @@ func cc_validate(cc_brand int, cc_number string, ccv_number string) {
   - The check digit (the last number of the card) is the amount that you
     would need to add to get a multiple of 10 (Modulo 10)
 */
-func luhns_algorithm(input string){
+func luhns_algorithm(input string) bool{
 
     //variables
     sum := 0
@@ -135,15 +135,15 @@ func luhns_algorithm(input string){
     input = input[0:len(input)-1]
 
 
-    //fmt.Println("last character: ", last_char)
-    //fmt.Println("stripped input: ", input)
+    fmt.Println("last character: ", last_char)
+    fmt.Println("stripped input: ", input)
 
     //reverse the string
     r := []rune(input)
     for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
         r[i], r[j] = r[j], r[i]
     }
-    //fmt.Println(string(r))
+    fmt.Println(string(r))
 
     for i := 0; i <= len(r)-1; i=i+1{
         mod, _ := strconv.Atoi(string(r[i]))
@@ -155,7 +155,7 @@ func luhns_algorithm(input string){
                 mod = mod - 9
             }
         }
-        //fmt.Println("value is: ", mod)
+        fmt.Println("value is: ", mod)
         sum = sum + mod
     }
     //fmt.Println("sum is: ", sum)
@@ -168,7 +168,9 @@ func luhns_algorithm(input string){
     }else {
         fmt.Println("invalid credit card number")
         fmt.Println("Now exiting...")
-        os.Exit(5)
+        return false
+        //os.Exit(5)
     }
 
+    return true
 }

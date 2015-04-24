@@ -40,6 +40,7 @@ func main() {
   // declare variables
   var cc_brand int
   var ccv_number, cc_number string
+  var return_result bool
 
   // main screen
   fmt.Println("Please enter the number corresponding to the credit card brand" +
@@ -101,7 +102,13 @@ func main() {
 
   //go through cc brands and validate
   cc_validate(cc_brand, cc_number, ccv_number)
-  
+
   //use luhn's algorithm to verify cc number is valid
-  luhns_algorithm(cc_number)
+  return_result = luhns_algorithm(cc_number)
+  if return_result{
+      os.Exit(0)
+  }else{
+    os.Exit(1)
+  }
+
 }
