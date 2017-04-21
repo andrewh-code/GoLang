@@ -1,0 +1,6 @@
+#ignore source library package folder
+github.com/
+exercises/
+sourcegraph.com/
+golang.org/
+
