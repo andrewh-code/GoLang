@@ -1,10 +1,13 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -130,6 +133,61 @@ func checkbox(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func upload(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Now serving /upload.html")
+	fmt.Println("Method: ", r.Method)
+
+	if r.Method == "GET" {
+		crutime := time.Now().Unix() // mark the time when the page is retrieved
+		hash := md5.New()            //help generate token (duplicate submissions prevented)
+
+		io.WriteString(hash, strconv.FormatInt(crutime, 10))
+		token := fmt.Sprintf("%x", hash.Sum(nil))
+
+		t, _ := template.ParseFiles("upload.html")
+		t.Execute(w, token)
+
+		fmt.Println("curtime: ", crutime)
+		fmt.Println("token:", token)
+		x := 32 << 20
+		fmt.Println(x)
+	} else {
+		fmt.Println("Method: ", r.Method)
+
+		r.ParseMultipartForm(32 << 20) // maximum memory
+		x := 32 << 20
+		fmt.Println(x)
+
+		file, handler, err := r.FormFile("uploadfile") //get the file handle of the file being uploaded ("uploadfile") name attribute of file in html file
+		// check if file being uploaded is a .txt file
+		if string(handler.Filename[len(handler.Filename)-4:]) != ".txt" {
+			panic("file uploaded is not a text file")
+		}
+		//check to see the type of file
+		buffer := make([]byte, 512) //set 512 bytes as it takes the first 512 bytes to determine what kind of file it is
+		filetype := http.DetectContentType(buffer)
+		if filetype != "application/octet-stream" {
+			panic("file uploaded is not of type application/octet-stream")
+		}
+		if err != nil {
+			fmt.Println("FomrFile error:", err)
+			panic(err)
+		}
+		defer file.Close()
+		// if the file is too big for the max memory, rest of the data is saved in a temporary file
+		// use r.formfile to get the file handle and use io.copy to to save the file to the system
+		fmt.Fprintf(w, "%v", handler.Header)
+		f, err := os.OpenFile("tempfiles/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666) //temporary file created
+		if err != nil {
+			fmt.Println("temporary file error:", err)
+			panic(err)
+		}
+		defer f.Close()
+		io.Copy(f, file)
+	}
+
+}
+
 func main() {
 	t := time.Now()
 	fmt.Println("Now serving...", t)
@@ -138,6 +196,7 @@ func main() {
 	http.HandleFunc("/validate", validate)
 	http.HandleFunc("/dropdown", dropdown)
 	http.HandleFunc("/checkbox", checkbox)
+	http.HandleFunc("/upload", upload)
 
 	err := http.ListenAndServe(":8080", nil) // set listen port
 	if err != nil {
