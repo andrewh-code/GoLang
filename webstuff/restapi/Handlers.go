@@ -90,3 +90,24 @@ func TodoCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func TodoDelete(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	todoID := vars["todoID"]
+	todoIDInt, err := strconv.Atoi(todoID)
+
+	if err != nil {
+		fmt.Fprintln(w, "unable to find", todoID)
+		panic(err)
+	}
+
+	for i, tStruct := range todos {
+		if tStruct.Id == todoIDInt {
+			todos = append(todos[:i], todos[i+1:]...)
+			fmt.Fprintln(w, "Deleting to do id", todoID)
+		}
+	}
+
+	fmt.Fprintln(w, "Remaining Todos: ", todos)
+}

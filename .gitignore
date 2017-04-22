@@ -4,3 +4,4 @@ exercises/
 sourcegraph.com/
 golang.org/
 
+*.exe
