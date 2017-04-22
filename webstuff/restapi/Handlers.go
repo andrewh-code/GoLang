@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"strconv"
+
 	"github.com/gorilla/mux"
 )
 
@@ -35,8 +37,22 @@ func ToDoIndex(w http.ResponseWriter, r *http.Request) {
 func ToDoShow(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todoID := vars["todoID"]
-	fmt.Fprintln(w, "Todo show:", todoID)
-	fmt.Fprintln(w, "info", todos)
+	todoIDInt, err := strconv.Atoi(todoID)
+
+	if err != nil {
+		fmt.Fprintln(w, "unable to find", todoID)
+		panic(err)
+	}
+
+	for _, tStruct := range todos {
+		if tStruct.Id == todoIDInt {
+			fmt.Fprintln(w, tStruct.Id)
+			fmt.Fprintln(w, tStruct.Name)
+			fmt.Fprintln(w, tStruct.Completed)
+			fmt.Fprintln(w, tStruct.Due)
+		}
+	}
+
 }
 
 //crate a new function, create to do
