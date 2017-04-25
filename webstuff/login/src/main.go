@@ -33,9 +33,14 @@ func internalPageHandler(w http.ResponseWriter, r *http.Request) {
 	page := "../internal.html"
 
 	if userName != "" {
-		fmt.Fprintf(w, page, userName)
+		//fmt.Fprintf(w, page, userName)
+		//host the page
+		t, _ := template.ParseFiles(page)
+		t.Execute(w, nil)
+		fmt.Println("username is: ", userName)
 	} else {
 		http.Redirect(w, r, "/", 302)
+		fmt.Println("internalPageHandler: could not get the username from cookie")
 	}
 }
 
@@ -48,7 +53,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	// you can use FormValue() or r.Form["name"]. Using FormValue(), golang calls ParseForm automatically
 	// will return the first found value with the same name. If there isn't any, returns empty string
 
-	redirectTarget := "/"
+	redirectTarget := "/redirect"
 	// iff successfully pass credentials
 	if name != "" && password != "" {
 		// check credentials here
@@ -65,13 +70,13 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
-// func redirect(w http.ResponseWriter, r *http.Request) {
-// 	//serve the html file
-// 	t, _ := template.ParseFiles("../redirect.html")
-// 	t.Execute(w, nil)
+func redirect(w http.ResponseWriter, r *http.Request) {
+	//serve the html file
+	t, _ := template.ParseFiles("../redirect.html")
+	t.Execute(w, nil)
 
-// 	fmt.Println("now serving redirect.html")
-// }
+	fmt.Println("now serving redirect.html")
+}
 
 // puts provided user name into a string map
 // secure cookie handler used to encode the value map (encrypted session)
@@ -123,7 +128,7 @@ func main() {
 	router.HandleFunc("/login", loginHandler).Methods("POST")
 	router.HandleFunc("/logout", logoutHandler).Methods("POST")
 
-	//router.HandleFunc("/redirect", redirect)
+	router.HandleFunc("/redirect", redirect)
 
 	http.Handle("/", router)
 	err := http.ListenAndServe(":8000", nil)
