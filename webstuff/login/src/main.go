@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/securecookie"
+	"github.com/gorilla/securecookie" //encodes/decodes authenticated and optionally encrypted cookie values
 )
 
 var cookieHandler = securecookie.New(
@@ -57,7 +57,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	// iff successfully pass credentials
 	if name != "" && password != "" {
 		// check credentials here
-		setSession(name, w)
+		setSession(name, w) //initialize the cookie on the server side (the session)
 		redirectTarget = "/internal"
 	}
 	//fmt.Fprintf(w, "log in failed, please try again")
@@ -86,9 +86,10 @@ func setSession(userName string, w http.ResponseWriter) {
 	value := map[string]string{
 		"name": userName,
 	}
-	if encoded, err := cookieHandler.Encode("session", value); err == nil {
+	//encode the session (with the cookie's name) and the value (hashmap of the username)
+	if encoded, err := cookieHandler.Encode("andrew-cookie", value); err == nil {
 		cookie := &http.Cookie{
-			Name:  "session",
+			Name:  "andrew-cookie",
 			Value: encoded,
 			Path:  "/",
 		}
@@ -100,9 +101,9 @@ func setSession(userName string, w http.ResponseWriter) {
 // cookie read from the request, then the secure cookie handler is used to decrypt the cookie value
 // string map and user name should be returned
 func getUserName(r *http.Request) (userName string) {
-	if cookie, err := r.Cookie("session"); err == nil {
+	if cookie, err := r.Cookie("andrew-cookie"); err == nil {
 		cookieValue := make(map[string]string)
-		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
+		if err = cookieHandler.Decode("andrew-cookie", cookie.Value, &cookieValue); err == nil {
 			userName = cookieValue["name"]
 		}
 	}
@@ -112,15 +113,18 @@ func getUserName(r *http.Request) (userName string) {
 // deletes current session
 func clearSession(w http.ResponseWriter) {
 	cookie := &http.Cookie{
-		Name:   "session",
+		Name:   "andrew-cookie",
 		Value:  "",
 		Path:   "/",
-		MaxAge: -1,
+		MaxAge: -1, //sets when the cookie expires (-1 means destroy the cookie when close the session)
 	}
 	http.SetCookie(w, cookie)
 }
 
 func main() {
+
+	// Cookie named "andrew-cookie" is created once user logs in
+	// can view it in the cookie settings in the web browser, the site is localhost
 	fmt.Println("Now Serving...")
 	router.HandleFunc("/", indexPageHandler)
 	router.HandleFunc("/internal", internalPageHandler)
