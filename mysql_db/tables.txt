@@ -5,3 +5,14 @@ CREATE TABLE `user` (
     `email` VARCHAR(64) NULL DEFAULT NULL,
     `date` DATE NULL DEFAULT NULL,
 )
+
+//connect
+\c root@<ip:3333>
+\sql
+select database();
+
+create database GODB_SANDBOX;
+use godb_sandbox;
+
+//why is this so much more complicated on windows...
+
