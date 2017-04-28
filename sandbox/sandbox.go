@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"fmt"
+	"sandbox/subpackage"
 )
 
 // CustomStruct blah blah blah
@@ -60,5 +61,9 @@ func hash() {
 
 func main() {
 	//pointerStuff()
-	hash()
+	//hash()
+	fmt.Println(returnNumber())
+
+	subpackage.SubPackageHello()
+	subpackage.SubPackageHelloAgain()
 }
