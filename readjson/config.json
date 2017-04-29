@@ -11,19 +11,12 @@
             "serverIP":"127.0.0.2"
         }
         ],
-    "databases": [
+    "databases":
         {
             "dbServerName": "localhost",
             "dbPassword": "password",
             "dbName": "godb_sandbox",
             "dbUser": "root"
-        },
-        {
-            "dbServerName": "localhost",
-            "dbPassword": "password2",
-            "dbName": "godb_sandbox2",
-            "dbUser": "root2"
         }
-        ]
 
 }
