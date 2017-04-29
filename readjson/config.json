@@ -1,0 +1,29 @@
+{
+    "servers":[
+        {
+            "serverName":"Shanghai_VPN",
+            "user":"Andrew",
+            "serverIP":"127.0.0.1"
+        },
+        {
+            "serverName":"Beijing_VPN",
+            "user":"Andrew2",
+            "serverIP":"127.0.0.2"
+        }
+        ],
+    "databases": [
+        {
+            "dbServerName": "localhost",
+            "dbPassword": "password",
+            "dbName": "godb_sandbox",
+            "dbUser": "root"
+        },
+        {
+            "dbServerName": "localhost",
+            "dbPassword": "password2",
+            "dbName": "godb_sandbox2",
+            "dbUser": "root2"
+        }
+        ]
+
+}

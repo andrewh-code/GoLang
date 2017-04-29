@@ -1,4 +1,5 @@
 // server
+//https://thenewstack.io/make-a-restful-json-api-go/
 
 // import packages and libraries
 package main
