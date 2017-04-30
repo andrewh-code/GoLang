@@ -1,0 +1,16 @@
+{
+    "Server": {
+        "Hostname": "localhost",
+        "UseHTTP": true,
+        "HTTPPort": ":1234"
+    },
+     "Database": {
+            "DBType": "MySQL",
+            "DBUsername": "root",
+            "DBPassword": "password",
+            "DBName": "GODB_SANDBOX",
+            "Hostname": "localhost",
+            "DBPort": ":3333"
+        }
+    }
+}
