@@ -22,8 +22,14 @@ var version = "v1"
 var routes = Routes{
 	Route{
 		"Index",
-		"Get",
+		"GET",
 		"/",
 		controller.Index,
+	},
+	Route{
+		"Login",
+		"GET",
+		"/login",
+		controller.Login,
 	},
 }

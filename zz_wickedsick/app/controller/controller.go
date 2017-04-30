@@ -1,14 +1,25 @@
 package controller
 
 import (
-	"fmt"
-	"html"
+	"html/template"
 	"net/http"
 )
 
-// Welcome message for localhost:1234/ url
+// Index Welcome message for localhost:1234/ url
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello ", html.EscapeString(r.URL.Path))
-	fmt.Fprintln(w, "Welcome to project wicked sick")
+
+	//serve the html file
+	indexFile := "app/view/index.html"
+	t, _ := template.ParseFiles(indexFile)
+	t.Execute(w, nil)
+
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+
+	//serve the html file
+	loginFile := "app/view/login.html"
+	t, _ := template.ParseFiles(loginFile)
+	t.Execute(w, nil)
 
 }
