@@ -17,7 +17,9 @@ type User struct {
 
 func funcUser(w http.ResponseWriter, r *http.Request) {
 
-	log.Printf("http request: ", r)
+	//log.Printf("http request: ", r)
+	FormatRequest(r)
+
 	// load page
 	t, _ := template.ParseFiles("register.html")
 	t.Execute(w, nil)
