@@ -37,7 +37,7 @@ var routes = Routes{
 	},
 	Route{
 		"TodoCreate",
-		"GET", //try to reach page but get 404, because it's post? - correct ()chagne back to post
+		"POST", //try to reach page but get 404, because it's post? - correct ()chagne back to post
 		"/api/{version}/todocreate",
 		TodoCreate,
 	},

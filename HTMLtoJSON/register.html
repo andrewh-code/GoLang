@@ -1,0 +1,30 @@
+<!doctype html>
+<h1>User Registration</h1>
+<!-- can add some client side validation -->
+<!-- for is the ID attribute -->
+<!--TODO: 
+- do client side validation (in html5)
+- make each field a requirement
+- put the entire thing into a table (css table?)
+-->
+ <form method="post" action="/register" enctype='application/json'>
+      <label for="name">User name</label>
+      <input type="text" id="username" name="username">
+      </br>
+      </br> 
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+      </br>
+      </br> 
+      <label for="firstname">First Name</label>
+      <input type="text" id = "firstname" name="firstname">
+      </br>
+      </br> 
+      <label for="lastname">Last Name</label>
+      <input type="text" id="lastname" name="lastname">
+      </br>
+      </br> 
+      <input name="jsonInput" value="jsonInputTrue">
+      <button type="submit">Register</button>
+ </form>
+ </html>
