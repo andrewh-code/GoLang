@@ -59,4 +59,8 @@ func main() {
 	fmt.Println("Now Serving...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
+	// only way for this to work is if the application/json
+	// is an acceptable format in which case chrome is not doing so
+	// Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8 (in the header request)
+
 }
