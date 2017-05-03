@@ -1,0 +1,45 @@
+<!doctype html>
+<h1>User Registration</h1>
+<!-- can add some client side validation -->
+<!-- for is the ID attribute -->
+<!--TODO: 
+- do client side validation (in html5)
+- make each field a requirement
+- put the entire thing into a table (css table?)
+-->
+ <form method="post" action="/register">
+      <label for="name">User name</label>
+      <input type="text" id="username" name="username">
+      </br>
+      </br> 
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+      </br>
+      </br> 
+      <label for="firstname">First Name</label>
+      <input type="text" id = "firstname" name="firstname">
+      </br>
+      </br> 
+      <label for="lastname">Last Name</label>
+      <input type="text" id="lastname" name="lastname">
+      </br>
+      </br> 
+      <label for="email">e-mail</label>
+      <input type="email" id="email" name="email" placeholder="Please enter a valid email address">
+      </br>
+      </br> 
+      <label for="phonenumber">phonenumber</label>
+      <input type="tel" pattern="^\(\d{3}\)\d{3}-\d{4}" id="phonenumber" name="phonenumber" placeholder="format: (xxx)xxx-xxxx">
+      </br> 
+      </br> 
+      <label for="address">address</label>
+      <input type="text" id="address" name="address">
+      </br> 
+      </br> 
+      <label for="postalcode">Postal Code</label>
+      <input type="postalcode" id="postalcode" name="postalcode">
+      </br>
+      </br> 
+      <button type="submit">Register</button>
+ </form>
+ </html>

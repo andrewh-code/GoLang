@@ -26,4 +26,14 @@ func NewRouter() *mux.Router {
 	}
 
 	return router
+
+	// // API subrouter
+	// // Serves all JSON REST handlers prefixed with /api
+	// s := r.PathPrefix("/api").Subrouter()
+	// for _, route := range apiRoutes {
+	// 	s.Methods(route.Method).
+	// 		Path(route.Pattern).
+	// 		Name(route.Name).
+	// 		Handler(AuthorizeHandler(route.HandlerFunc))
+	// }
 }

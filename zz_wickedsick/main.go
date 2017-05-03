@@ -41,7 +41,10 @@ func main() {
 		db.Database.DBPort + ")" + "/" +
 		db.Database.DBName
 	database.ConnectToDB(dbConnectCommand)
-
+	//database.SelectFromDB()
+	rows, err := database.DBC.Query("select * from user")
+	errors.HandleErr(err)
+	log.Println(rows)
 	// run the server (add conditions for https)
 	log.Println("Now Serving...")
 

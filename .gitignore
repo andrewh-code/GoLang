@@ -4,6 +4,7 @@ github.com/
 sourcegraph.com/
 golang.org/
 zz_wickedsick/wickedsick_brainstorm.txt
+zz_wickedsick/wickedsick_db.txt
 
 .gitignore
 *.exe

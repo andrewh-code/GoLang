@@ -19,6 +19,7 @@ var version = "v1"
 
 // create a new file just to handle the routes themselves
 // this file focuses on the paths while the router.go file focuses on driving the routes
+// this is bad design isnt' it
 var routes = Routes{
 	Route{
 		"Index",
@@ -30,6 +31,18 @@ var routes = Routes{
 		"Login",
 		"GET",
 		"/login",
-		controller.Login,
+		controller.LoginGET,
+	},
+	Route{
+		"Register",
+		"GET",
+		"/register",
+		controller.RegisterUserGET,
+	},
+	Route{
+		"Register",
+		"POST",
+		"/register",
+		controller.RegisterUserPOST,
 	},
 }
