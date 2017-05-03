@@ -14,6 +14,7 @@ process of securing password hasshes from a Rainbow Table attrack
 - rainbow table attack is possible because output of a hash function is same as the input
 - use a unique "salt" and combine it with the password
 Hash(password + salt)
+https://crackstation.net/hashing-security.htm
 */
 
 func GenerateHash(input string) string {
@@ -36,7 +37,18 @@ func GenerateSalt() string {
 	return hashedSalt[0:10]
 }
 
-func EncryptPassword(password string) string {
+func EncryptPassword(password string, salt string) string {
 
-	return GenerateHash(password + GenerateSalt())
+	return GenerateHash(password + salt)
+}
+
+// func EncryptPassword2(password string) string {
+
+// 	return GenerateHash(password + GenerateSalt())
+// }
+
+// when user logs in
+func ValidatePassword(password string) string {
+	//database query to retrieve the user's name, password and salt
+	return "hello"
 }

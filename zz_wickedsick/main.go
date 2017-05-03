@@ -6,14 +6,16 @@ import (
 	"zz_wickedsick/middleware"
 	"zz_wickedsick/utils/config"
 	"zz_wickedsick/utils/database"
+	"zz_wickedsick/utils/debug"
 	"zz_wickedsick/utils/errors"
-	"zz_wickedsick/utils/password"
 )
 
 //constants
 const (
 	FILE_NAME = "config/config.json"
 )
+
+var MainDebug = true
 
 /*************************************************
 * main server logic to run
@@ -29,6 +31,8 @@ func main() {
 	// initiate the router to handle the URL/api execution
 	router := middleware.NewRouter() // variable to handle the middleware portion (handle the routes and the handlers)
 
+	// initiate debug
+	debug.Init(true)
 	// retrieve the configuration from the config.json file
 	//TODO: put all this into one call function
 	server = config.RetrieveServerConfiguration(FILE_NAME)
@@ -43,8 +47,6 @@ func main() {
 		db.Database.DBName
 	database.ConnectToDB(dbConnectCommand)
 
-	//test password
-	log.Println("password is: ", password.EncryptPassword("password"))
 	// run the server (add conditions for https)
 	log.Println("Now Serving...")
 

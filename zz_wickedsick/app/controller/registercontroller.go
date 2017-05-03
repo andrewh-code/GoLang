@@ -1,10 +1,11 @@
 package controller
 
 import (
+	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"zz_wickedsick/app/model"
+	"zz_wickedsick/utils/debug"
 	"zz_wickedsick/utils/password"
 )
 
@@ -31,19 +32,16 @@ func RegisterUserGET(w http.ResponseWriter, r *http.Request) {
 // it is supposed to insert the names into
 func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
-	// validate the user input
 	// make sure that the username is unique
 	// make sure that the user does not exist already
 	// create the user in the database
 	var errorMsg []string
-	validUserFlag := false
-	errorMsg = append(errorMsg, "Unable to Register User due to: ")
+	validUserFlag := true
+	var user model.User
+	errorMsg = append(errorMsg, "Unable to Register User due to: \n")
 
 	// parse the form to retrieve the values
 	r.ParseForm()
-	// TODO: do backend validation (combine with front end validation)
-
-	var user model.User
 
 	user.UserName = r.Form.Get("username")
 	user.Password = r.Form.Get("password")
@@ -53,26 +51,30 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	user.PhoneNumber = r.Form.Get("phonenumber")
 	user.Address = r.Form.Get("address")
 	user.PostalCode = r.Form.Get("postalcode") //valdiate (6 chars long)
+	// TODO: do backend validation (combine with front end validation)
 
-	log.Println(user)
+	if user.UserExists() {
+		validUserFlag = false
+		errorMsg = append(errorMsg, "Username already exists\n")
+	}
 
-	// encrypt the password
-	log.Println("encrypted password is: ", password.EncryptPassword(user.Password))
+	// once the validation is complete, encrypt the password
+	user.Salt = password.GenerateSalt()
+	user.HashedPassword = password.EncryptPassword(user.Password, user.Salt)
+
+	debug.Log("registercontroller.go", user.Salt)
+	debug.Log("registercontroller.go", user.HashedPassword)
 
 	// create the user in the database
 	// sql connection should already be open from main.go (*global db variable)
-	user.AddUser()
-
-	validUserFlag = true
 
 	if validUserFlag == true {
+		user.AddUser()
 		// load a successful regisration page, OR
 		// TODO: load a pop up window that says registration completed?
-		registerCompleteFile := "app/view/registrationcomplete.html"
-		t, _ := template.ParseFiles(registerCompleteFile)
-		t.Execute(w, nil)
+		fmt.Fprintf(w, "<h1>Successfully registered user</h1>")
 	} else {
-		//reload the registration page?
+		fmt.Fprintf(w, "<h1>error registering user</h1></br><div>%v</div>", errorMsg)
 	}
 
 }
