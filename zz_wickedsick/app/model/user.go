@@ -35,6 +35,9 @@ func (u User) AddUser() {
 	result, err := stmt.Exec(u.UserName, u.Password, u.FirstName, u.LastName, u.Email, u.PhoneNumber, u.Address, u.PostalCode)
 	errors.HandleErr(err)
 
-	log.Printf("user.go: ", result)
+	id, err := result.LastInsertId()
+	errors.HandleErr(err)
+
+	log.Printf("user.go: User %s has been successfully added with lastInsertId() as %d", u.UserName, id)
 
 }

@@ -36,13 +36,13 @@ var routes = Routes{
 	Route{
 		"Register",
 		"GET",
-		"/register",
+		"/accounts/register",
 		controller.RegisterUserGET,
 	},
 	Route{
 		"Register",
 		"POST",
-		"/register",
+		"/accounts/register",
 		controller.RegisterUserPOST,
 	},
 }

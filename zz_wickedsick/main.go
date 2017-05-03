@@ -7,6 +7,7 @@ import (
 	"zz_wickedsick/utils/config"
 	"zz_wickedsick/utils/database"
 	"zz_wickedsick/utils/errors"
+	"zz_wickedsick/utils/password"
 )
 
 //constants
@@ -41,10 +42,9 @@ func main() {
 		db.Database.DBPort + ")" + "/" +
 		db.Database.DBName
 	database.ConnectToDB(dbConnectCommand)
-	//database.SelectFromDB()
-	rows, err := database.DBC.Query("select * from user")
-	errors.HandleErr(err)
-	log.Println(rows)
+
+	//test password
+	log.Println("password is: ", password.EncryptPassword("password"))
 	// run the server (add conditions for https)
 	log.Println("Now Serving...")
 

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"zz_wickedsick/app/model"
+	"zz_wickedsick/utils/password"
 )
 
 // Index Welcome message for localhost:1234/ url
@@ -13,17 +14,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	indexFile := "app/view/index.html"
 	t, _ := template.ParseFiles(indexFile)
 	t.Execute(w, nil)
-
-}
-
-func LoginGET(w http.ResponseWriter, r *http.Request) {
-	//serve the html file
-	loginFile := "app/view/login.html"
-	t, _ := template.ParseFiles(loginFile)
-	t.Execute(w, nil)
-
-}
-func LoginPOST(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -46,7 +36,7 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	// make sure that the user does not exist already
 	// create the user in the database
 	var errorMsg []string
-	registrationComplete := false
+	validUserFlag := false
 	errorMsg = append(errorMsg, "Unable to Register User due to: ")
 
 	// parse the form to retrieve the values
@@ -66,15 +56,18 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(user)
 
+	// encrypt the password
+	log.Println("encrypted password is: ", password.EncryptPassword(user.Password))
+
 	// create the user in the database
 	// sql connection should already be open from main.go (*global db variable)
 	user.AddUser()
 
-	registrationComplete = true
+	validUserFlag = true
 
-	if registrationComplete == true {
+	if validUserFlag == true {
 		// load a successful regisration page, OR
-		// load a pop up window that says registration completed
+		// TODO: load a pop up window that says registration completed?
 		registerCompleteFile := "app/view/registrationcomplete.html"
 		t, _ := template.ParseFiles(registerCompleteFile)
 		t.Execute(w, nil)
@@ -83,3 +76,29 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// take the user struct as an input, output an error value?
+// TODO: Work on this later
+func validateUser(u model.User) bool {
+
+	// validate the username
+	validUserFlag := true
+
+	// validate the firstname
+	if len(u.FirstName) < 1 || len(u.FirstName) > 64 { //due to varchar(64) constraint on db
+		validUserFlag = false
+	}
+	// validate the last name
+	if len(u.LastName) < 1 || len(u.LastName) > 64 { //due to varchar(64) constraint on db
+		validUserFlag = false
+	}
+	if len(u.Address) < 1 || len(u.Address) > 150 {
+		validUserFlag = false
+	}
+	// use regular expressoin to validate email
+	//use regular expression to validate postal code
+
+	return validUserFlag
+}
+
+// how to hash a password
