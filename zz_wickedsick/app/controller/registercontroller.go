@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"zz_wickedsick/app/model"
@@ -84,6 +85,10 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		response.Success = false
 		response.Data = errorMsg
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		panic(err)
 	}
 
 }

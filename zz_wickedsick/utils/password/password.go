@@ -29,12 +29,12 @@ func GenerateHash(input string) string {
 
 func GenerateSalt() string {
 
-	random := rand.Intn(10000000) // could use a MUCH BETTER rand algo
+	random := rand.Intn(10000000) + rand.Intn(10000000) // could use a MUCH BETTER rand algo
 	salt := strconv.Itoa(random)
-	//hash the salt and take the first 10 digits
 	hashedSalt := GenerateHash(salt)
 
-	return hashedSalt[0:10]
+	// we COULD take the first x amount of digits but no
+	return hashedSalt
 }
 
 func EncryptPassword(password string, salt string) string {

@@ -21,6 +21,7 @@ var version = "v1"
 // this file focuses on the paths while the router.go file focuses on driving the routes
 // this is bad design isnt' it
 var routes = Routes{
+	// MVC routes
 	Route{
 		"Index",
 		"GET",
@@ -40,6 +41,18 @@ var routes = Routes{
 		controller.LoginGET,
 	},
 	Route{
+		"Login",
+		"POST",
+		"/login",
+		controller.LoginPOST,
+	},
+	Route{
+		"FailedLogin",
+		"GET",
+		"/redirect",
+		controller.RedirectFailedLogin,
+	},
+	Route{
 		"Register",
 		"GET",
 		"/accounts/register",
@@ -50,5 +63,13 @@ var routes = Routes{
 		"POST",
 		"/accounts/register",
 		controller.RegisterUserPOST,
+	},
+
+	//"Secret" api routes
+	Route{
+		"UserDetails",
+		"GET",
+		"/{version}/{user}",
+		UserDetails,
 	},
 }

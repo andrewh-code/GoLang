@@ -6,6 +6,8 @@ import (
 	"zz_wickedsick/utils/debug"
 	"zz_wickedsick/utils/errors"
 
+	"zz_wickedsick/utils/password"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -76,16 +78,20 @@ func (u User) AddUser() {
 // CheckUser check if user already exists
 func (u User) UserExists() bool {
 
-	var count = 0
+	var count int
 	var userExists = false
 	txn, err := database.DBC.Begin()
 	dbStatement := "SELECT COUNT(username) FROM ws_user where username='" + u.UserName + "'"
+	debug.Log("user.go", dbStatement)
 	res, err := txn.Query(dbStatement)
 	errors.HandleErr(err)
 
+	// count() is going to ALWAYS return 1 row, need to check the value of that row
 	for res.Next() {
-		count++
+		err = res.Scan(&count)
+		errors.HandleErr(err)
 	}
+
 	if count < 1 {
 		debug.Log("user.go: user does not exist", u.UserName)
 	} else {
@@ -99,7 +105,33 @@ func (u User) UserExists() bool {
 	return userExists
 }
 
-// DeleteUser delte a user from the system
-func (u User) DeleteUser() {
+func (u User) ValidateLogin() bool {
+
+	var dbUsername string
+	var dbPassword string
+	var encryptedPassword string
+	var dbSalt string
+	var loginResult = false
+
+	txn, err := database.DBC.Begin()
+	// can put in a check to see if there are multiple users BUT therethere are already existing checks
+	// as in the username fields are UNIQUE (primary key)
+
+	dbStatement := "SELECT * FROM ws_user_salt where username='" + u.UserName + "'"
+	debug.Log("user.go", dbStatement)
+	res, err := txn.Query(dbStatement)
+	errors.HandleErr(err)
+
+	for res.Next() {
+		err = res.Scan(&dbUsername, &dbSalt, &dbPassword)
+		errors.HandleErr(err)
+	}
+
+	encryptedPassword = password.EncryptPassword(u.Password, dbSalt)
+	if (u.UserName == dbUsername) && (encryptedPassword == dbPassword) {
+		loginResult = true
+	}
+
+	return loginResult
 
 }

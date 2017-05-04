@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+/*
+	Because we are not using a front end framework (either Ember, Angular, React, etc), I am dividing the
+	[backend] REST API handlers into their own directory app/controller. They will act as the front end part
+	and will also act as the back end REST API handlers
+*/
+
 type JSONResponse struct {
 	Success bool        `json:"success"`
 	Data    interface{} `json:"data,string"`
@@ -35,4 +41,8 @@ func Response(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error sending reponse: %s", err)
 		}
 	}
+}
+
+func UserDetails(w http.ResponseWriter, r *http.Request) {
+
 }
