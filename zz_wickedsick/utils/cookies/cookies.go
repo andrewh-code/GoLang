@@ -1,7 +1,8 @@
-package middleware
+package cookies
 
 import (
 	"net/http"
+	"zz_wickedsick/utils/debug"
 
 	"github.com/gorilla/securecookie"
 )
@@ -12,7 +13,7 @@ var cookieHandler = securecookie.New(
 	securecookie.GenerateRandomKey(32),
 )
 
-var cookieName = "wicked sick cookie"
+var cookieName = "wickedsickcookie" //cookies can't have spaces in their names
 
 func SetSession(userName string, w http.ResponseWriter) {
 
@@ -21,7 +22,7 @@ func SetSession(userName string, w http.ResponseWriter) {
 	}
 
 	//encode the session
-	if encoded, err := cookieHandler.Encode(userName, value); err == nil {
+	if encoded, err := cookieHandler.Encode(cookieName, value); err == nil {
 		cookie := &http.Cookie{
 			Name:  cookieName,
 			Value: encoded,
@@ -30,6 +31,7 @@ func SetSession(userName string, w http.ResponseWriter) {
 
 		http.SetCookie(w, cookie)
 	}
+	debug.Log("\tlogincontroller.go-->SetSession: ", value["name"]+" "+cookieName)
 }
 
 func GetUserName(r *http.Request) (userName string) {
@@ -41,5 +43,17 @@ func GetUserName(r *http.Request) (userName string) {
 			userName = cookieValue["name"]
 		}
 	}
+	debug.Log("logincontroller.go --> GetUserName ", cookieName)
 	return
+}
+
+// deletes current session
+func ClearSession(w http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:   cookieName,
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1, //sets when the cookie expires (-1 means destroy the cookie when close the session)
+	}
+	http.SetCookie(w, cookie)
 }
