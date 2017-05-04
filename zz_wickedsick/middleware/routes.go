@@ -28,6 +28,12 @@ var routes = Routes{
 		controller.Index,
 	},
 	Route{
+		"JSONReponse",
+		"GET",
+		"/json",
+		Response,
+	},
+	Route{
 		"Login",
 		"GET",
 		"/login",

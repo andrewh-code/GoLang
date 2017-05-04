@@ -1,13 +1,17 @@
 package controller
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"zz_wickedsick/app/model"
 	"zz_wickedsick/utils/debug"
 	"zz_wickedsick/utils/password"
 )
+
+type JSONResponse struct {
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data,string"`
+}
 
 // Index Welcome message for localhost:1234/ url
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -25,6 +29,7 @@ func RegisterUserGET(w http.ResponseWriter, r *http.Request) {
 	registerFile := "app/view/register.html"
 	t, _ := template.ParseFiles(registerFile)
 	t.Execute(w, nil)
+
 }
 
 // TODO: Refactor this function to separeate validation and actual insertion of new user into the database
@@ -32,13 +37,13 @@ func RegisterUserGET(w http.ResponseWriter, r *http.Request) {
 // it is supposed to insert the names into
 func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
-	// make sure that the username is unique
-	// make sure that the user does not exist already
-	// create the user in the database
 	var errorMsg []string
 	validUserFlag := true
 	var user model.User
+	var response JSONResponse
 	errorMsg = append(errorMsg, "Unable to Register User due to: \n")
+
+	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 
 	// parse the form to retrieve the values
 	r.ParseForm()
@@ -70,11 +75,15 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
 	if validUserFlag == true {
 		user.AddUser()
-		// load a successful regisration page, OR
-		// TODO: load a pop up window that says registration completed?
-		fmt.Fprintf(w, "<h1>Successfully registered user</h1>")
+		// load a successful regisration page, OR json response
+		w.WriteHeader(http.StatusOK)
+		response.Success = true
+		response.Data = "Successfully registered user"
+		//fmt.Fprintf(w, "<h1>Successfully registered user</h1>")
 	} else {
-		fmt.Fprintf(w, "<h1>error registering user</h1></br><div>%v</div>", errorMsg)
+		w.WriteHeader(http.StatusBadRequest)
+		response.Success = false
+		response.Data = errorMsg
 	}
 
 }

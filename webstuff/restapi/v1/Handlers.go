@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
+	"html"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -14,10 +14,10 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprintln(w, "Hello ", html.EscapeString(r.URL.Path))
+	fmt.Fprintln(w, "Hello ", html.EscapeString(r.URL.Path))
 	//serve the html file
-	t, _ := template.ParseFiles("../view/index.html")
-	t.Execute(w, nil)
+	// t, _ := template.ParseFiles("../view/index.html")
+	// t.Execute(w, nil)
 
 }
 
