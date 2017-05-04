@@ -47,10 +47,22 @@ var routes = Routes{
 		controller.LoginPOST,
 	},
 	Route{
+		"Logout",
+		"POST",
+		"/logout",
+		controller.Logout,
+	},
+	Route{
 		"FailedLogin",
 		"GET",
 		"/redirect",
 		controller.RedirectFailedLogin,
+	},
+	Route{
+		"Inside",
+		"GET",
+		"/inside",
+		controller.RedirectInside,
 	},
 	Route{
 		"Register",
