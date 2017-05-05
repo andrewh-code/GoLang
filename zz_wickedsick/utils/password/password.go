@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"math/rand"
 	"strconv"
+	"time"
+	"zz_wickedsick/utils/debug"
 )
 
 // salting passwords
@@ -29,7 +31,8 @@ func GenerateHash(input string) string {
 
 func GenerateSalt() string {
 
-	random := rand.Intn(10000000) + rand.Intn(10000000) // could use a MUCH BETTER rand algo
+	random := rand.Intn(100000) + int(time.Now().Unix()) // could use a MUCH BETTER rand algo
+	debug.Log("password.go: ", strconv.Itoa(random))
 	salt := strconv.Itoa(random)
 	hashedSalt := GenerateHash(salt)
 

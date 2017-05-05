@@ -68,8 +68,8 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	user.Salt = password.GenerateSalt()
 	user.HashedPassword = password.EncryptPassword(user.Password, user.Salt)
 
-	debug.Log("registercontroller.go", user.Salt)
-	debug.Log("registercontroller.go", user.HashedPassword)
+	debug.Log("registercontroller.go", "salt is "+user.Salt)
+	debug.Log("registercontroller.go", "password is "+user.HashedPassword)
 
 	// create the user in the database
 	// sql connection should already be open from main.go (*global db variable)

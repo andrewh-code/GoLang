@@ -47,9 +47,9 @@ func LoginPOST(w http.ResponseWriter, r *http.Request) {
 
 	//TODO: get rid of this quick hack
 	if user.UserName == "admin" || user.UserName == "test" {
-		cookies.SetSession(user.UserName, w)
 		redirectTarget = "/inside"
 	}
+	cookies.SetSession(user.UserName, w)
 	debug.Log("logincontroller.go: ", "redirecting to "+redirectTarget)
 	http.Redirect(w, r, redirectTarget, 302)
 }

@@ -132,6 +132,47 @@ func (u User) ValidateLogin() bool {
 		loginResult = true
 	}
 
+	err = txn.Commit()
+	errors.HandleErr(err)
+
 	return loginResult
 
+}
+
+func GetUserDetails(userName string) (u User) {
+
+	var dbUsername string
+	var dbFirstName string
+	var dbLastName string
+	var dbEmail string
+	var dbPhoneNumber string
+	var dbAddress string
+	var dbPostalCode string
+
+	txn, err := database.DBC.Begin()
+	dbStatement := "SELECT username, firstname, lastname, email, phonenumber, postalcode, address " +
+		"FROM ws_user WHERE " +
+		"username='" + userName + "'"
+	debug.Log("user.go", dbStatement)
+	res, err := txn.Query(dbStatement)
+	errors.HandleErr(err)
+
+	for res.Next() {
+		debug.Log("user.go --> GetUserDetails ", "now scanning the results")
+		err = res.Scan(&dbUsername, &dbFirstName, &dbLastName, &dbEmail, &dbPhoneNumber, &dbPostalCode, &dbAddress)
+		errors.HandleErr(err)
+	}
+
+	u.UserName = dbUsername
+	u.FirstName = dbFirstName
+	u.LastName = dbLastName
+	u.Email = dbEmail
+	u.PhoneNumber = dbPhoneNumber
+	u.PostalCode = dbPostalCode
+	u.Address = dbAddress
+
+	err = txn.Commit()
+	errors.HandleErr(err)
+
+	return u
 }

@@ -65,6 +65,12 @@ var routes = Routes{
 		controller.RedirectInside,
 	},
 	Route{
+		"UserInformation",
+		"GET",
+		"/inside/{user}",
+		controller.UserInformationGET,
+	},
+	Route{
 		"Register",
 		"GET",
 		"/accounts/register",
@@ -81,7 +87,7 @@ var routes = Routes{
 	Route{
 		"UserDetails",
 		"GET",
-		"/{version}/{user}",
+		"/api/{version}/{user}",
 		UserDetails,
 	},
 }

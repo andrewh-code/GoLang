@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"zz_wickedsick/app/model"
+
+	"github.com/gorilla/mux"
 )
 
 /*
@@ -44,5 +47,18 @@ func Response(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserDetails(w http.ResponseWriter, r *http.Request) {
+
+	var userInfo model.User
+	vars := mux.Vars(r)
+	userName := vars["user"]
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+
+	userInfo = model.GetUserDetails(userName)
+
+	if err := json.NewEncoder(w).Encode(userInfo); err != nil {
+		panic(err)
+	}
 
 }
