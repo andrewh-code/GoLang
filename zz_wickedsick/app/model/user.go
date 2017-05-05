@@ -8,6 +8,8 @@ import (
 
 	"zz_wickedsick/utils/password"
 
+	"bytes"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -175,4 +177,43 @@ func GetUserDetails(userName string) (u User) {
 	errors.HandleErr(err)
 
 	return u
+}
+
+func (u User) ChangeUser() {
+
+	// if the field value is < 1 or if it's blank, assume the user didn't want to change
+	// option 1
+	// set fields in struct to a hash map. go through hash map and append to the SQL/UPDATE query
+	// option 2
+	// use reflection loop (no need for hashmap?)
+	dbToUser := make(map[string]string) //make() initializes and allocates hash map
+
+	dbToUser["username"] = u.UserName
+	dbToUser["password"] = u.Password
+	dbToUser["firstname"] = u.FirstName
+	dbToUser["lastname"] = u.LastName
+	dbToUser["email"] = u.Email
+	dbToUser["phonenumber"] = u.PhoneNumber
+	dbToUser["postalode"] = u.PostalCode
+	dbToUser["address"] = u.Address
+
+	// use buffer instead of string beacuse every time you concatenate a string
+	// you create a NEW string in memory. Don't want that
+	var newValue string
+	var dbStatement bytes.Buffer
+	dbStatement.WriteString("UPDATE ws_user SET ")
+
+	// iterate through hashmap
+	for key := range dbToUser {
+		if len(dbToUser[key]) > 1 {
+			newValue = key + "=" + dbToUser[key] + ", "
+			dbStatement.WriteString(newValue)
+			// is this more efficient than string concatenation?
+			// dbStatement.WriteString(key)
+			// dbStatement.WriteString("=")
+			// dbStatement.WriteString(dbToUser[key])
+			// dbStatement.WriteString(", ")
+		}
+	}
+	log.Println(dbStatement)
 }

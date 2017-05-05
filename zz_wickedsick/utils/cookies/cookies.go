@@ -43,7 +43,8 @@ func GetUserName(r *http.Request) (userName string) {
 			userName = cookieValue["name"]
 		}
 	}
-	debug.Log("logincontroller.go --> GetUserName ", cookieName)
+	debug.Log("cookies.go --> GetUserName ", cookieName)
+	debug.Log("cookies.go --> GetUserName ", userName)
 	return
 }
 

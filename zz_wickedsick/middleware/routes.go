@@ -67,9 +67,28 @@ var routes = Routes{
 	Route{
 		"UserInformation",
 		"GET",
-		"/inside/{user}",
+		"/inside/info",
 		controller.UserInformationGET,
 	},
+	// Route{
+	// 	"UserInformationFromURI",
+	// 	"GET",
+	// 	"/inside/{user}",
+	// 	controller.UserInformationGETFromURI,
+	// },
+	Route{
+		"ChangeUserInfoGET",
+		"GET",
+		"/inside/changeinfo",
+		controller.ChangeUserGET,
+	},
+	Route{
+		"ChangeUserInfoPUT",
+		"PUT",
+		"/inside/changeinfo",
+		controller.ChangeUserPUT,
+	},
+
 	Route{
 		"Register",
 		"GET",
