@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -17,6 +18,10 @@ const (
 
 	DB_TABLE = "user"
 )
+
+type User struct {
+	UserName sql.NullString
+}
 
 func main() {
 
@@ -75,6 +80,32 @@ func main() {
 	}
 	fmt.Println("stmtDelete is: ", stmtDelete)
 
+	//sql null types
+	var u User
+
+	u.UserName = sql.NullString{String: "", Valid: true} // if true, then pass in "" or '' to the database. If FALSE, pass in NULL to the database
+	sqlUpdate := "update user set password=ifnull(?, password) where username='andre'"
+	stmtUpdate, err := dbc.Prepare(sqlUpdate)
+	if err != nil {
+		panic(err)
+	}
+	result, err := stmtUpdate.Exec(u.UserName)
+	if err != nil {
+		panic(err)
+	}
+	log.Println(result)
+
+	rows, err = dbc.Query("select * from user")
+	for rows.Next() {
+		var uid int
+		var username string
+		var password string
+		var email string
+		var date string
+
+		err = rows.Scan(&uid, &username, &password, &email, &date)
+		fmt.Println(strconv.Itoa(uid) + "\t" + username + "\t" + password + "\t" + email + "\t" + date)
+	}
 	//close the database connection
 	dbc.Close()
 }
