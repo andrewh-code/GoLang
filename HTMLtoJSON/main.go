@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+//curl -H "Content-Type: application/json" -X POST -d '{"username":"andrew","password":"password", "firstname": "andrew", "lastname": "andrewlastname"}' http://localhost:8080/
+
 type User struct {
 	Username  string `json: "username"`
 	Password  string `json: "password"`
@@ -53,9 +55,42 @@ func funcUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func JSONREsponse(w http.ResponseWriter, r *http.Request) {
+
+	FormatRequest(r)
+
+	if r.Method == "GET" {
+		// load page
+		t, _ := template.ParseFiles("register.html")
+		t.Execute(w, nil)
+	} else if r.Method == "POST" {
+		var u User
+		decoder := json.NewDecoder(r.Body)
+
+		w.Header().Set("Content-Type", "application/json")
+
+		err := decoder.Decode(&u)
+		if err != nil {
+			panic(err)
+		}
+
+		defer r.Body.Close()
+		fmt.Fprintf(w, u.Username)
+		fmt.Fprintf(w, u.Firstname)
+		fmt.Fprintf(w, u.Lastname)
+		fmt.Fprintf(w, u.Password)
+
+		if err := json.NewEncoder(w).Encode(u); err != nil {
+			panic(err)
+		}
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
 func main() {
 
-	http.HandleFunc("/", funcUser)
+	http.HandleFunc("/", JSONREsponse)
 	fmt.Println("Now Serving...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 

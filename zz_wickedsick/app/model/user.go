@@ -293,6 +293,24 @@ func (u User) ChangePassword() {
 	if numRowsAffected < 1 {
 		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
 	} else if numRowsAffected > 1 {
+
+		panic("too many rows updated, panic")
+	} else {
+		debug.Log("user.go --> ChangeUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
+	}
+
+	dbStatement = "UPDATE ws_user SET password='" + u.Password + "' " + "WHERE username='" + u.UserName + "'"
+	debug.Log("user.go -->ChangePassword()", dbStatement)
+	res, err = txn.Exec(dbStatement)
+	errors.HandleErr(err)
+
+	numRowsAffected, err = res.RowsAffected()
+	errors.HandleErr(err)
+
+	if numRowsAffected < 1 {
+		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
+	} else if numRowsAffected > 1 {
+
 		panic("too many rows updated, panic")
 	} else {
 		debug.Log("user.go --> ChangeUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
