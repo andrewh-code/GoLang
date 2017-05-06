@@ -73,6 +73,7 @@ func ChangeUserGET(w http.ResponseWriter, r *http.Request) {
 func ChangeUserPUT(w http.ResponseWriter, r *http.Request) {
 
 	var user model.User
+	var updatedUser model.User
 	cookieUserName := cookies.GetUserName(r)
 
 	// if cookie DOES exist
@@ -92,13 +93,19 @@ func ChangeUserPUT(w http.ResponseWriter, r *http.Request) {
 		// change user
 		user.ChangeUser()
 
+		// get updated user information
+		updatedUser = model.GetUserDetails(cookieUserName)
+
+		fmt.Fprintln(w, updatedUser.UserName)
+		fmt.Fprintln(w, updatedUser.FirstName)
+		fmt.Fprintln(w, updatedUser.LastName)
+		fmt.Fprintln(w, updatedUser.Email)
+		fmt.Fprintln(w, updatedUser.Address)
+		fmt.Fprintln(w, updatedUser.PostalCode)
+		fmt.Fprintln(w, updatedUser.PhoneNumber)
+	} else {
+		fmt.Fprintf(w, "Unable to change user")
 	}
 
 }
 
-func changeUserValidation(user model.User) {
-
-	// reflection
-	//userReflection := reflect.Valueof(user)
-
-}

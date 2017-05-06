@@ -82,8 +82,9 @@ func main() {
 
 	//sql null types
 	var u User
-
-	u.UserName = sql.NullString{String: "", Valid: true} // if true, then pass in "" or '' to the database. If FALSE, pass in NULL to the database
+	var temp string
+	temp = "false"
+	u.UserName = sql.NullString{String: temp, Valid: false} // if true, then pass in "" or '' to the database. If FALSE, pass in NULL to the database
 	sqlUpdate := "update user set password=ifnull(?, password) where username='andre'"
 	stmtUpdate, err := dbc.Prepare(sqlUpdate)
 	if err != nil {

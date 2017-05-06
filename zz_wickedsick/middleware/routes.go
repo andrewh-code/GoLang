@@ -84,9 +84,21 @@ var routes = Routes{
 	},
 	Route{
 		"ChangeUserInfoPUT",
-		"PUT",
+		"POST",
 		"/inside/changeinfo",
-		controller.ChangeUserPUT,
+		controller.ChangeUserPUT, // DO NOT use this as PUT method (data stored in URI) and checs to see if the request-uri already exists on the server (not the db)
+	},
+	Route{
+		"ChangeUserPassword",
+		"GET",
+		"/inside/changepassword",
+		controller.ChangePasswordGET,
+	},
+	Route{
+		"ChangeUserPassword",
+		"POST",
+		"/inside/changepassword",
+		controller.ChangePasswordPOST,
 	},
 
 	Route{

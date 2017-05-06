@@ -2,13 +2,14 @@ package model
 
 import (
 	"log"
+	"strconv"
 	"zz_wickedsick/utils/database"
 	"zz_wickedsick/utils/debug"
 	"zz_wickedsick/utils/errors"
 
 	"zz_wickedsick/utils/password"
 
-	"bytes"
+	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -84,7 +85,7 @@ func (u User) UserExists() bool {
 	var userExists = false
 	txn, err := database.DBC.Begin()
 	dbStatement := "SELECT COUNT(username) FROM ws_user where username='" + u.UserName + "'"
-	debug.Log("user.go", dbStatement)
+	debug.Log("user.go UserExists()", dbStatement)
 	res, err := txn.Query(dbStatement)
 	errors.HandleErr(err)
 
@@ -120,7 +121,7 @@ func (u User) ValidateLogin() bool {
 	// as in the username fields are UNIQUE (primary key)
 
 	dbStatement := "SELECT * FROM ws_user_salt where username='" + u.UserName + "'"
-	debug.Log("user.go", dbStatement)
+	debug.Log("user.go--> ValiidateLogin()", dbStatement)
 	res, err := txn.Query(dbStatement)
 	errors.HandleErr(err)
 
@@ -130,7 +131,12 @@ func (u User) ValidateLogin() bool {
 	}
 
 	encryptedPassword = password.EncryptPassword(u.Password, dbSalt)
+
+	log.Println(dbUsername, dbPassword, dbSalt)
+	log.Println(u.UserName, encryptedPassword)
+
 	if (u.UserName == dbUsername) && (encryptedPassword == dbPassword) {
+		debug.Log("user.go --> ValidateLogin()", "username matches and encrypted password matches")
 		loginResult = true
 	}
 
@@ -186,34 +192,114 @@ func (u User) ChangeUser() {
 	// set fields in struct to a hash map. go through hash map and append to the SQL/UPDATE query
 	// option 2
 	// use reflection loop (no need for hashmap?)
-	dbToUser := make(map[string]string) //make() initializes and allocates hash map
+	//dbToUser := make(map[string]sql.NullString) //make() initializes and allocates hash map
 
-	dbToUser["username"] = u.UserName
-	dbToUser["password"] = u.Password
-	dbToUser["firstname"] = u.FirstName
-	dbToUser["lastname"] = u.LastName
-	dbToUser["email"] = u.Email
-	dbToUser["phonenumber"] = u.PhoneNumber
-	dbToUser["postalode"] = u.PostalCode
-	dbToUser["address"] = u.Address
+	var firstname sql.NullString
+	var lastname sql.NullString
+	var email sql.NullString
+	var phonenumber sql.NullString
+	var postalcode sql.NullString
+	var address sql.NullString
 
-	// use buffer instead of string beacuse every time you concatenate a string
-	// you create a NEW string in memory. Don't want that
-	var newValue string
-	var dbStatement bytes.Buffer
-	dbStatement.WriteString("UPDATE ws_user SET ")
-
-	// iterate through hashmap
-	for key := range dbToUser {
-		if len(dbToUser[key]) > 1 {
-			newValue = key + "=" + dbToUser[key] + ", "
-			dbStatement.WriteString(newValue)
-			// is this more efficient than string concatenation?
-			// dbStatement.WriteString(key)
-			// dbStatement.WriteString("=")
-			// dbStatement.WriteString(dbToUser[key])
-			// dbStatement.WriteString(", ")
-		}
+	//this was a bitch...
+	//firstname := sql.NullString{String: u.FirstName, Valid: false}
+	if u.FirstName == "" {
+		firstname = sql.NullString{String: u.FirstName, Valid: false}
+	} else {
+		firstname = sql.NullString{String: u.FirstName, Valid: true}
 	}
-	log.Println(dbStatement)
+	//lastname := sql.NullString{String: u.LastName, Valid: false}
+	if u.LastName == "" {
+		lastname = sql.NullString{String: u.LastName, Valid: false}
+	} else {
+		lastname = sql.NullString{String: u.LastName, Valid: true}
+	}
+	//email := sql.NullString{String: u.Email, Valid: false}
+	if u.Email == "" {
+		email = sql.NullString{String: u.Email, Valid: false}
+	} else {
+		email = sql.NullString{String: u.Email, Valid: true}
+	}
+	//phonenumber := sql.NullString{String: u.PhoneNumber, Valid: false}
+	if u.PhoneNumber == "" {
+		phonenumber = sql.NullString{String: u.PhoneNumber, Valid: false}
+	} else {
+		phonenumber = sql.NullString{String: u.PhoneNumber, Valid: true}
+	}
+	//postalcode := sql.NullString{String: u.PostalCode, Valid: false}
+	if u.PostalCode == "" {
+		postalcode = sql.NullString{String: u.PostalCode, Valid: false}
+	} else {
+		postalcode = sql.NullString{String: u.PostalCode, Valid: true}
+	}
+	//address := sql.NullString{String: u.Address, Valid: false}
+	if u.Address == "" {
+		address = sql.NullString{String: u.Address, Valid: false}
+	} else {
+		address = sql.NullString{String: u.Address, Valid: true}
+	}
+
+	txn, err := database.DBC.Begin()
+
+	// use ifnull() mysql function
+	dbStatement := "UPDATE ws_user SET firstname=IFNULL(?, firstname), " +
+		"lastname=IFNULL(?, lastname), " +
+		"email=IFNULL(?, email), " +
+		"phonenumber=IFNULL(?, phonenumber), " +
+		"postalcode=IFNULL(?, postalcode), " +
+		"address=IFNULL(?, address) " +
+		"WHERE username='" + u.UserName + "'"
+
+	debug.Log("user.go --> ChangeUser", dbStatement)
+	stmt, err := txn.Prepare(dbStatement)
+	errors.HandleErr(err)
+
+	res, err := stmt.Exec(firstname, lastname, email, phonenumber, postalcode, address)
+	errors.HandleErr(err)
+
+	numRowsAffected, err := res.RowsAffected()
+	errors.HandleErr(err)
+	if numRowsAffected < 1 {
+		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
+	} else if numRowsAffected > 1 {
+		panic("too many rows updated, panic")
+	} else {
+		debug.Log("user.go --> ChangeUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
+	}
+
+	err = txn.Commit()
+	errors.HandleErr(err)
+
+} //TODO: refactor - do these functions need to be struct methods or shuld they be separate from the struct
+
+//  ChangePassword TODO: set this to return bool?
+func (u User) ChangePassword() {
+
+	// generate a new salt
+	newSalt := password.GenerateSalt()
+
+	// hash the salt and password together
+	newHashedPassword := password.EncryptPassword(u.Password, newSalt)
+
+	txn, err := database.DBC.Begin()
+	dbStatement := "UPDATE ws_user_salt SET salt='" + newSalt + "', " + "saltedpassword='" + newHashedPassword + "' " + "WHERE username='" + u.UserName + "'"
+	debug.Log("user.go -->ChangePassword()", dbStatement)
+	res, err := txn.Exec(dbStatement)
+	errors.HandleErr(err)
+
+	numRowsAffected, err := res.RowsAffected()
+	errors.HandleErr(err)
+
+	if numRowsAffected < 1 {
+		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
+	} else if numRowsAffected > 1 {
+		panic("too many rows updated, panic")
+	} else {
+		debug.Log("user.go --> ChangeUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
+	}
+
+	//TODO: remember to change the password in the ws_user table (debugging)
+	err = txn.Commit()
+	errors.HandleErr(err)
+
 }
