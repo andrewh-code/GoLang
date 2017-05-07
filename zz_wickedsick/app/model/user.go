@@ -310,13 +310,52 @@ func (u User) ChangePassword() {
 	if numRowsAffected < 1 {
 		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
 	} else if numRowsAffected > 1 {
-
+		// txn rollback
 		panic("too many rows updated, panic")
 	} else {
 		debug.Log("user.go --> ChangeUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
 	}
 
-	//TODO: remember to change the password in the ws_user table (debugging)
+	err = txn.Commit()
+	errors.HandleErr(err)
+
+}
+
+func (u User) DeleteUser() {
+
+	txn, err := database.DBC.Begin()
+	dbStatement := "Delete from ws_user where username='" + u.UserName + "'"
+	debug.Log("user.go -->DeleteUser()", dbStatement)
+	res, err := txn.Exec(dbStatement)
+	errors.HandleErr(err)
+
+	numRowsAffected, err := res.RowsAffected()
+	errors.HandleErr(err)
+	if numRowsAffected < 1 {
+		log.Println("unable to delete" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
+	} else if numRowsAffected > 1 {
+		// txn rollbakc
+		panic("too many rows updated, panic")
+	} else {
+		debug.Log("user.go --> DeleteUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
+	}
+
+	dbStatement = "Delete from ws_user_salt where username='" + u.UserName + "'"
+	debug.Log("user.go -->DeleteUser()", dbStatement)
+	res, err = txn.Exec(dbStatement)
+	errors.HandleErr(err)
+
+	numRowsAffected, err = res.RowsAffected()
+	errors.HandleErr(err)
+	if numRowsAffected < 1 {
+		log.Println("unable to delete" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
+	} else if numRowsAffected > 1 {
+		// txn rollbakc
+		panic("too many rows updated, panic")
+	} else {
+		debug.Log("user.go --> DeleteUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
+	}
+
 	err = txn.Commit()
 	errors.HandleErr(err)
 

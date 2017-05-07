@@ -42,6 +42,7 @@ func FormatRequest(r *http.Request) {
 	var request []string
 
 	// break point
+	request = append(request, "\n")
 	request = append(request, "===============BEGIN REQUEST=================================")
 
 	// format the method, url, protocol, and hostURL
