@@ -27,7 +27,9 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		if cookieUserName != "" {
 			u.UserName = cookieUserName
 			u.DeleteUser()
-			fmt.Fprintln(w, "successfully deleted "+u.UserName)
+			// wipe the cookie session
+			//fmt.Fprintln(w, "successfully deleted "+u.UserName)
+			Logout(w, r)
 		}
 
 	default:

@@ -101,15 +101,15 @@ var routes = Routes{
 		controller.ChangePasswordPOST,
 	},
 	Route{
-		"DeleteUser",
+		"DeleteUserGET",
 		"GET",
 		"/inside/delete",
 		controller.DeleteUser,
 	},
 	Route{
-		"DeleteUser",
+		"DeleteUserPOST",
 		"POST",
-		"/inside/delete/yes",
+		"/inside/delete",
 		controller.DeleteUser,
 	},
 	Route{

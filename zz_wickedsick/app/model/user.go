@@ -324,7 +324,8 @@ func (u User) ChangePassword() {
 func (u User) DeleteUser() {
 
 	txn, err := database.DBC.Begin()
-	dbStatement := "Delete from ws_user where username='" + u.UserName + "'"
+
+	dbStatement := "Delete from ws_user_salt where username='" + u.UserName + "'"
 	debug.Log("user.go -->DeleteUser()", dbStatement)
 	res, err := txn.Exec(dbStatement)
 	errors.HandleErr(err)
@@ -340,7 +341,7 @@ func (u User) DeleteUser() {
 		debug.Log("user.go --> DeleteUser()", "update successful with rows affected: "+strconv.FormatInt(numRowsAffected, 10))
 	}
 
-	dbStatement = "Delete from ws_user_salt where username='" + u.UserName + "'"
+	dbStatement = "Delete from ws_user where username='" + u.UserName + "'"
 	debug.Log("user.go -->DeleteUser()", dbStatement)
 	res, err = txn.Exec(dbStatement)
 	errors.HandleErr(err)
