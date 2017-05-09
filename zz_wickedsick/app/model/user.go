@@ -55,16 +55,11 @@ func (u User) AddUser() {
 	txn, err := database.DBC.Begin()
 	errors.HandleErr(err)
 
-	// stmt, err := txn.Prepare(dbStatement)
-	// errors.HandleErr(err)
 	result, err := txn.Exec(dbStatement, u.UserName, u.Password, u.FirstName, u.LastName, u.Email, u.PhoneNumber, u.Address, u.PostalCode)
 	errors.HandleErr(err)
 	id, err := result.LastInsertId()
 	errors.HandleErr(err)
 
-	// prepare second sql statemnt
-	// stmt2, err := txn.Prepare(dbStatement2)
-	// errors.HandleErr(err)
 	result2, err := txn.Exec(dbStatement2, u.UserName, u.Salt, u.HashedPassword)
 	errors.HandleErr(err)
 	id2, err := result2.LastInsertId()
