@@ -3,8 +3,7 @@ package config
 import (
 	"encoding/json"
 	"os"
-
-	"zz_wickedsick/utils/errors"
+	"zz_wickedsick/utils/errorstuff"
 )
 
 // initiate structs for the .json file
@@ -38,7 +37,7 @@ func RetrieveServerConfiguration(fileName string) (server ServerStruct) {
 	file, _ := os.Open(fileName)
 	decoder := json.NewDecoder(file)
 	err := decoder.Decode(&server)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	file.Close()
 
 	// return value is server (declared at function declaration)
@@ -53,7 +52,7 @@ func RetrieveDBConfiguration(fileName string) (db DBStruct) {
 	file, _ := os.Open(fileName)
 	decoder := json.NewDecoder(file)
 	err := decoder.Decode(&db)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	file.Close()
 
 	return

@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"log"
-	"zz_wickedsick/utils/errors"
+	"zz_wickedsick/utils/errorstuff"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -21,17 +21,17 @@ func ConnectToDB(dbConnectCommand string) {
 	log.Printf("Now Connecting to database...")
 	// connect to database
 	DBC, err = sql.Open("mysql", dbConnectCommand)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	// ping to make sure database is up and running
 	err = DBC.Ping()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	log.Println("Database up and running...")
 }
 
 func SelectFromDB() {
 	rows, err := DBC.Query("select * from user")
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	log.Println(rows)
 }

@@ -7,7 +7,7 @@ import (
 	"zz_wickedsick/utils/config"
 	"zz_wickedsick/utils/database"
 	"zz_wickedsick/utils/debug"
-	"zz_wickedsick/utils/errors"
+	"zz_wickedsick/utils/errorstuff"
 )
 
 //constants
@@ -51,6 +51,6 @@ func main() {
 	log.Println("Now Serving...")
 
 	err = http.ListenAndServe(server.Server.HTTPPort, router)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 }

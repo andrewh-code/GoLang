@@ -1,4 +1,4 @@
-package errors
+package errorstuff
 
 import (
 	"log"
@@ -11,4 +11,12 @@ func HandleErr(err error) {
 		log.Fatal(err)
 
 	}
+}
+
+func DBErr(err error) {
+	if err != nil {
+		log.Printf(err.Error())
+		log.Printf("now exiting db function")
+	}
+
 }

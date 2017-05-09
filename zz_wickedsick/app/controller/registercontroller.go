@@ -39,6 +39,7 @@ func RegisterUserGET(w http.ResponseWriter, r *http.Request) {
 func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
 	var errorMsg []string
+	var err error
 	validUserFlag := true
 	var user model.User
 	var response JSONResponse
@@ -59,9 +60,9 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	user.PostalCode = r.Form.Get("postalcode") //valdiate (6 chars long)
 	// TODO: do backend validation (combine with front end validation)
 
-	if user.UserExists() {
-		validUserFlag = false
-		errorMsg = append(errorMsg, "Username already exists\n")
+	validUserFlag, err = user.UserExists()
+	if validUserFlag == false || err != nil {
+		errorMsg = append(errorMsg, err.Error())
 	}
 
 	// once the validation is complete, encrypt the password
@@ -75,7 +76,10 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	// sql connection should already be open from main.go (*global db variable)
 
 	if validUserFlag == true {
-		user.AddUser()
+		validUserFlag, err = user.AddUser()
+		errorMsg = append(errorMsg, "username "+user.UserName+"already exists")
+	}
+	if validUserFlag == true && err == nil {
 		// load a successful regisration page, OR json response
 		w.WriteHeader(http.StatusOK)
 		response.Success = true

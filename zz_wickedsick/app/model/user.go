@@ -1,11 +1,12 @@
 package model
 
 import (
+	"errors"
 	"log"
 	"strconv"
 	"zz_wickedsick/utils/database"
 	"zz_wickedsick/utils/debug"
-	"zz_wickedsick/utils/errors"
+	"zz_wickedsick/utils/errorstuff"
 
 	"zz_wickedsick/utils/password"
 
@@ -36,8 +37,10 @@ type UserHash struct {
 	HashedPassword string
 }
 
-func (u User) AddUser() {
+func (u User) AddUser() (bool, error) {
 
+	// variables
+	var isSuccess = false
 	// set SQL queries
 	dbStatement := "INSERT INTO ws_user " +
 		"(date, username, password, firstname, lastname, email, phonenumber, address, postalcode) " +
@@ -51,57 +54,72 @@ func (u User) AddUser() {
 
 	// need to insert into TWO tables
 	// need to create an 'atomic' transaction for this begin and commit
-	// need to prepare the txn
 	txn, err := database.DBC.Begin()
-	errors.HandleErr(err)
+	errorstuff.DBErr(err)
 
 	result, err := txn.Exec(dbStatement, u.UserName, u.Password, u.FirstName, u.LastName, u.Email, u.PhoneNumber, u.Address, u.PostalCode)
-	errors.HandleErr(err)
+	if err != nil {
+		return false, err
+	}
+
 	id, err := result.LastInsertId()
-	errors.HandleErr(err)
+	if err != nil {
+		return false, err
+	}
 
 	result2, err := txn.Exec(dbStatement2, u.UserName, u.Salt, u.HashedPassword)
-	errors.HandleErr(err)
+	if err != nil {
+		return false, err
+	}
 	id2, err := result2.LastInsertId()
-	errors.HandleErr(err)
+	if err != nil {
+		return false, err
+	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	if err != nil {
+		return false, err
+	}
 
-	log.Printf("user.go: User %s has been successfully added to ws_user with lastInsertId() as %d", u.UserName, id)
-	log.Printf("user.go: User %s has been successfully added with ws_user_salt lastInsertId() as %d", u.UserName, id2)
+	if err == nil {
+		log.Printf("user.go: User %s has been successfully added to ws_user with lastInsertId() as %d", u.UserName, id)
+		log.Printf("user.go: User %s has been successfully added with ws_user_salt lastInsertId() as %d", u.UserName, id2)
+		isSuccess = true
+	}
 
-	// TODO: change this so that if error does occur, return false
+	return isSuccess, err
 }
 
 // CheckUser check if user already exists
-func (u User) UserExists() bool {
+func (u User) UserExists() (bool, error) {
 
 	var count int
+
 	var userExists = false
 	txn, err := database.DBC.Begin()
 	dbStatement := "SELECT COUNT(username) FROM ws_user where username='" + u.UserName + "'"
 	debug.Log("user.go UserExists()", dbStatement)
 	res, err := txn.Query(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	// count() is going to ALWAYS return 1 row, need to check the value of that row
 	for res.Next() {
 		err = res.Scan(&count)
-		errors.HandleErr(err)
+		errorstuff.HandleErr(err)
 	}
 
 	if count < 1 {
 		debug.Log("user.go: user does not exist", u.UserName)
 	} else {
 		debug.Log("user.go: user already exists", u.UserName)
+		err = errors.New("user.go: user already exists")
 		userExists = true
 	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
-	return userExists
+	return userExists, err
 }
 
 func (u User) ValidateLogin() bool {
@@ -119,11 +137,11 @@ func (u User) ValidateLogin() bool {
 	dbStatement := "SELECT * FROM ws_user_salt where username='" + u.UserName + "'"
 	debug.Log("user.go--> ValiidateLogin()", dbStatement)
 	res, err := txn.Query(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	for res.Next() {
 		err = res.Scan(&dbUsername, &dbSalt, &dbPassword)
-		errors.HandleErr(err)
+		errorstuff.HandleErr(err)
 	}
 
 	encryptedPassword = password.EncryptPassword(u.Password, dbSalt)
@@ -137,7 +155,7 @@ func (u User) ValidateLogin() bool {
 	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	return loginResult
 
@@ -159,12 +177,12 @@ func GetUserDetails(userName string) (u User) {
 		"username='" + userName + "'"
 	debug.Log("user.go", dbStatement)
 	res, err := txn.Query(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	for res.Next() {
 		debug.Log("user.go --> GetUserDetails ", "now scanning the results")
 		err = res.Scan(&dbUsername, &dbFirstName, &dbLastName, &dbEmail, &dbPhoneNumber, &dbPostalCode, &dbAddress)
-		errors.HandleErr(err)
+		errorstuff.HandleErr(err)
 	}
 
 	u.UserName = dbUsername
@@ -176,7 +194,7 @@ func GetUserDetails(userName string) (u User) {
 	u.Address = dbAddress
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	return u
 }
@@ -248,13 +266,13 @@ func (u User) ChangeUser() {
 
 	debug.Log("user.go --> ChangeUser", dbStatement)
 	stmt, err := txn.Prepare(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	res, err := stmt.Exec(firstname, lastname, email, phonenumber, postalcode, address)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	numRowsAffected, err := res.RowsAffected()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	if numRowsAffected < 1 {
 		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
 	} else if numRowsAffected > 1 {
@@ -264,7 +282,7 @@ func (u User) ChangeUser() {
 	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 } //TODO: refactor - do these functions need to be struct methods or shuld they be separate from the struct
 
@@ -281,10 +299,10 @@ func (u User) ChangePassword() {
 	dbStatement := "UPDATE ws_user_salt SET salt='" + newSalt + "', " + "saltedpassword='" + newHashedPassword + "' " + "WHERE username='" + u.UserName + "'"
 	debug.Log("user.go -->ChangePassword()", dbStatement)
 	res, err := txn.Exec(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	numRowsAffected, err := res.RowsAffected()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	if numRowsAffected < 1 {
 		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
@@ -298,10 +316,10 @@ func (u User) ChangePassword() {
 	dbStatement = "UPDATE ws_user SET password='" + u.Password + "' " + "WHERE username='" + u.UserName + "'"
 	debug.Log("user.go -->ChangePassword()", dbStatement)
 	res, err = txn.Exec(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	numRowsAffected, err = res.RowsAffected()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	if numRowsAffected < 1 {
 		log.Println("unable to update" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
@@ -313,7 +331,7 @@ func (u User) ChangePassword() {
 	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 }
 
@@ -324,10 +342,10 @@ func (u User) DeleteUser() {
 	dbStatement := "Delete from ws_user_salt where username='" + u.UserName + "'"
 	debug.Log("user.go -->DeleteUser()", dbStatement)
 	res, err := txn.Exec(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	numRowsAffected, err := res.RowsAffected()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	if numRowsAffected < 1 {
 		log.Println("unable to delete" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
 	} else if numRowsAffected > 1 {
@@ -340,10 +358,10 @@ func (u User) DeleteUser() {
 	dbStatement = "Delete from ws_user where username='" + u.UserName + "'"
 	debug.Log("user.go -->DeleteUser()", dbStatement)
 	res, err = txn.Exec(dbStatement)
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 	numRowsAffected, err = res.RowsAffected()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 	if numRowsAffected < 1 {
 		log.Println("unable to delete" + u.UserName + " affected rows: " + strconv.FormatInt(numRowsAffected, 10))
 	} else if numRowsAffected > 1 {
@@ -354,6 +372,6 @@ func (u User) DeleteUser() {
 	}
 
 	err = txn.Commit()
-	errors.HandleErr(err)
+	errorstuff.HandleErr(err)
 
 }
