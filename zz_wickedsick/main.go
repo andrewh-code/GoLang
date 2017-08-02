@@ -49,6 +49,7 @@ func main() {
 
 	// run the server (add conditions for https)
 	log.Println("Now Serving...")
+	log.Println(server.Server.HostName + server.Server.HTTPPort)
 
 	err = http.ListenAndServe(server.Server.HTTPPort, router)
 	errorstuff.HandleErr(err)

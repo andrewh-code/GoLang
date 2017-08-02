@@ -91,7 +91,7 @@ func (u User) AddUser() (bool, error) {
 }
 
 // CheckUser check if user already exists
-func (u User) UserExists() (bool, error) {
+func (u User) UserExists() bool {
 
 	var count int
 
@@ -116,10 +116,11 @@ func (u User) UserExists() (bool, error) {
 		userExists = true
 	}
 
-	err = txn.Commit()
-	errorstuff.HandleErr(err)
+	//err = txn.Commit()
+	//errorstuff.HandleErr(err)
 
-	return userExists, err
+	debug.Log("user.go: ", "returning from userExists()")
+	return userExists
 }
 
 func (u User) ValidateLogin() bool {

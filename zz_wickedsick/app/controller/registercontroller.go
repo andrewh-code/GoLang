@@ -60,10 +60,14 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 	user.PostalCode = r.Form.Get("postalcode") //valdiate (6 chars long)
 	// TODO: do backend validation (combine with front end validation)
 
-	validUserFlag, err = user.UserExists()
-	if validUserFlag == false || err != nil {
-		errorMsg = append(errorMsg, err.Error())
+	if user.UserExists() {
+		validUserFlag = false
 	}
+	//debug.Log("registercontroller.go: ", err.Error())
+	if validUserFlag == false {
+		errorMsg = append(errorMsg, "user alredy exists")
+	}
+	debug.Log("registercontroller.go", "right after check valid user flag")
 
 	// once the validation is complete, encrypt the password
 	user.Salt = password.GenerateSalt()
@@ -77,7 +81,7 @@ func RegisterUserPOST(w http.ResponseWriter, r *http.Request) {
 
 	if validUserFlag == true {
 		validUserFlag, err = user.AddUser()
-		errorMsg = append(errorMsg, "username "+user.UserName+"already exists")
+		errorMsg = append(errorMsg, "username "+user.UserName+" already exists")
 	}
 	if validUserFlag == true && err == nil {
 		// load a successful regisration page, OR json response

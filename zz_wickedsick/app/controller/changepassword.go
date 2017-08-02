@@ -41,7 +41,7 @@ func ChangePasswordPOST(w http.ResponseWriter, r *http.Request) {
 		u.Password = newPassword
 		u.ChangePassword()
 		// TODO: if changepassword spits out an error, chagne validate to false
-		fmt.Fprintf(w, "password successfully changed to "+u.Password+"TODO: remember to delete this")
+		fmt.Fprintf(w, "password successfully changed to "+u.Password)
 	} else {
 		fmt.Fprintf(w, "try a new password")
 	}
