@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"goparity/app/routing"
+	"goparity/routing"
 	"net/http"
 )
 
@@ -14,16 +14,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", handler)
 
-	port := "9000"
+	port := ":9000"
 	// initialize router
 	router := &routing.Router{}
 	router.InitializeRouter()
 	router.SetRoutes()
 
 	fmt.Printf("now servering on localhost: %s\n", port)
-	err := http.ListenAndServe(":"+port, router)
-	if err != nil {
-		panic(err)
-	}
-
+	// err := http.ListenAndServe(":"+port, router)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	router.Run(port)
 }
