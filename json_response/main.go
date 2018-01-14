@@ -12,7 +12,8 @@ import (
 )
 
 func JsonResponse(w http.ResponseWriter, r *http.Request) {
-	person := model.Person{Firstname: "Andrew", Lastname: "Code"}
+	address := model.Address{City: "Toronto", Street: "Yonge Street"}
+	person := model.Person{Firstname: "Andrew", Lastname: "Code", Address: &address}
 
 	//personInstance := person.PopulatePerson()
 
