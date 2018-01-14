@@ -1,5 +1,7 @@
 package routing
 
+// base middleware design off of: https://github.com/mingrammer/go-todo-rest-api-example
+
 import (
 	// custom libraries
 	"fmt"
@@ -25,7 +27,31 @@ func (r *Router) SetRoutes() {
 	r.Router.HandleFunc("/", HelloWorld).Methods("GET")
 }
 
-// print this function
+/*
+	create wrapper functions (to make things look cleaner when setting routes)
+	for the HTTP methods (get, put, patch, post, etc)
+*/
+
+// Get wrapper method for HTTP GET method
+func (r *Router) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	r.Router.HandleFunc(path, f).Methods("GET")
+}
+
+// Post wrapper method for HTTP POST method
+func (r *Router) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	r.Router.HandleFunc(path, f).Methods("POST")
+}
+
+// Put wrapper method for HTTP PUT method
+func (r *Router) Put(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	r.Router.HandleFunc(path, f).Methods("PUT")
+}
+
+// Delete wrapper method for HTTP DELETE method
+func (r *Router) Delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	r.Router.HandleFunc(path, f).Methods("DELETE")
+}
+
 func PrintThis(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "print this")
 }
