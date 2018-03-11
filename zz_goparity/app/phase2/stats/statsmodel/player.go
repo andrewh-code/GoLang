@@ -2,9 +2,10 @@ package model
 
 type Player struct {
 	ID          int16        `json:playerid`
+	TucID       int16        `json:tucid`
 	FirstName   string       `json:firstname`
 	LastName    string       `json:lastname`
-	CurrentTeam string 		 `json:currentteam`
+	CurrentTeam string       `json:currentteam`
 	Salary      string       `json:salary`
 	PlayerStats *PlayerStats `json:stats`
 	Wins        int          `json:wins`

@@ -6,6 +6,7 @@ import (
 	// custom libraries
 	"fmt"
 	"net/http"
+	"zz_goparity/app/phase1/leaderboard/leaderboardcontroller"
 
 	"github.com/gorilla/mux"
 )
@@ -23,8 +24,20 @@ func (r *Router) InitializeRouter() {
 
 func (r *Router) SetRoutes() {
 
-	r.Router.HandleFunc("/test", PrintThis).Methods("GET")
+	//index
 	r.Router.HandleFunc("/", HelloWorld).Methods("GET")
+
+	// TODO: routing
+	//r.Router.HandleFunc("/stats", statscontroller.HelloWorldStats).Methods("GET")
+	r.Router.HandleFunc("/stats", leaderboardcontroller.LeaderBoardTest).Methods("GET")
+	r.Router.HandleFunc("/stats/{playerid}", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/goals", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/assists", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/secondassists", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/defences", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/throaways", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats/leaderboard/drops", DummyFunc).Methods("GET")
 }
 
 /*
@@ -33,31 +46,31 @@ func (r *Router) SetRoutes() {
 */
 
 // Get wrapper method for HTTP GET method
-func (r *Router) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	r.Router.HandleFunc(path, f).Methods("GET")
-}
+// func (r *Router) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
+// 	r.Router.HandleFunc(path, f).Methods("GET")
+// }
 
-// Post wrapper method for HTTP POST method
-func (r *Router) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	r.Router.HandleFunc(path, f).Methods("POST")
-}
+// // Post wrapper method for HTTP POST method
+// func (r *Router) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
+// 	r.Router.HandleFunc(path, f).Methods("POST")
+// }
 
-// Put wrapper method for HTTP PUT method
-func (r *Router) Put(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	r.Router.HandleFunc(path, f).Methods("PUT")
-}
+// // Put wrapper method for HTTP PUT method
+// func (r *Router) Put(path string, f func(w http.ResponseWriter, r *http.Request)) {
+// 	r.Router.HandleFunc(path, f).Methods("PUT")
+// }
 
-// Delete wrapper method for HTTP DELETE method
-func (r *Router) Delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	r.Router.HandleFunc(path, f).Methods("DELETE")
-}
-
-func PrintThis(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "print this")
-}
+// // Delete wrapper method for HTTP DELETE method
+// func (r *Router) Delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
+// 	r.Router.HandleFunc(path, f).Methods("DELETE")
+// }
 
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello world")
+}
+
+func DummyFunc(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "dummy api endpoint, replace")
 }
 
 func (r *Router) Run(port string) {
