@@ -29,7 +29,7 @@ func (r *Router) SetRoutes() {
 
 	// TODO: routing
 	//r.Router.HandleFunc("/stats", statscontroller.HelloWorldStats).Methods("GET")
-	r.Router.HandleFunc("/stats", leaderboardcontroller.LeaderBoardTest).Methods("GET")
+	r.Router.HandleFunc("/stats", leaderboardcontroller.LeaderBoardTestArray).Methods("GET")
 	r.Router.HandleFunc("/stats/{playerid}", DummyFunc).Methods("GET")
 	r.Router.HandleFunc("/stats/leaderboard", DummyFunc).Methods("GET")
 	r.Router.HandleFunc("/stats/leaderboard/goals", DummyFunc).Methods("GET")
