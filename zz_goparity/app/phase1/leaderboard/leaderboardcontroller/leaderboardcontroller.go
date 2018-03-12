@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"zz_goparity/app/phase1/leaderboard/leaderboardmodel"
+	"zz_goparity/utilities/prettyprint"
 )
 
 func HelloWorldLeaderBoard(w http.ResponseWriter, r *http.Request) {
@@ -73,10 +74,7 @@ func LeaderBoardTestArray(w http.ResponseWriter, r *http.Request) {
 
 	player = append(player, tempPlayer)
 
-	out, err := json.MarshalIndent(player, "", "    ")
-	if err != nil {
-		fmt.Println("error:", err)
-	}
+	out := prettyprint.PrettyPrintJSON(player)
 	os.Stdout.Write(out)
 
 	w.Header().Set("Content-Type", "application/json")
