@@ -29,5 +29,9 @@ func (properties *Properties) ReadProperties(fileName string) (Properties, err){
 	// for each line in the reader
 	// if key exists, output error --> duplicate property exists (break out of the thing?)
 	// if key does exist, insert it into hash map
+
+	for reader.Scan(){
+		fmt.Println(reader.Text())
+	}
 	
 }
