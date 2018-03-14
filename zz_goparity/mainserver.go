@@ -20,7 +20,6 @@ func main() {
 	router.InitializeRouter()
 	router.SetRoutes()
 
-	fmt.Printf("now servering on localhost: %s\n", port)
 	// err := http.ListenAndServe(":"+port, router)
 	// if err != nil {
 	// 	panic(err)
