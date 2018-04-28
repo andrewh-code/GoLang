@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"zz_goparity/app/phase1/stats/playermodel"
 	"zz_goparity/utilities/prettyprint"
 )
 
@@ -14,10 +15,10 @@ func HelloWorldLeaderBoard(w http.ResponseWriter, r *http.Request) {
 
 func LeaderBoardTestArray(w http.ResponseWriter, r *http.Request) {
 
-	var player []leaderboardmodel.Player
+	var player []playermodel.Player
 	// var stats []leaderboardmodel.PlayerStats
-	var tempPlayer leaderboardmodel.Player
-	var tempStats leaderboardmodel.PlayerStats
+	var tempPlayer playermodel.Player
+	var tempStats playermodel.PlayerStats
 
 	tempStats.Goals = 30
 	tempStats.Assists = 30

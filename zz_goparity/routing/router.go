@@ -6,7 +6,7 @@ import (
 	// custom libraries
 	"fmt"
 	"net/http"
-	"zz_goparity/app/phase1/leaderboard/leaderboardcontroller"
+	"zz_goparity/app/phase1/stats/individualcontroller"
 
 	"github.com/gorilla/mux"
 )
@@ -29,8 +29,8 @@ func (r *Router) SetRoutes() {
 
 	// TODO: routing
 	//r.Router.HandleFunc("/stats", statscontroller.HelloWorldStats).Methods("GET")
-	r.Router.HandleFunc("/stats", leaderboardcontroller.LeaderBoardTest).Methods("GET")
-	r.Router.HandleFunc("/stats/{playerid}", DummyFunc).Methods("GET")
+	r.Router.HandleFunc("/stats", individualcontroller.IndividualTest).Methods("GET")
+	r.Router.HandleFunc("/stats/{playerid}", individualcontroller.IndividualStats).Methods("GET")
 	r.Router.HandleFunc("/stats/leaderboard", DummyFunc).Methods("GET")
 	r.Router.HandleFunc("/stats/leaderboard/goals", DummyFunc).Methods("GET")
 	r.Router.HandleFunc("/stats/leaderboard/assists", DummyFunc).Methods("GET")
