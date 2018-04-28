@@ -4,13 +4,13 @@ package leaderboardmodel
 type Player struct {
 	ID          int64        `json:playerid`
 	TucID       int64        `json:tucid`
+	LastUpdated int64        `json:lastupdated`
 	FirstName   string       `json:firstname`
 	LastName    string       `json:lastname`
 	Salary      string       `json:salary`
 	Wins        float32      `json:wins`
 	TimesTraded int          `json:timestraded`
 	PlayerStats *PlayerStats `json:stats`
-	
 }
 
 // LeaderBoardPlayerStats - subnode structure for leaderboard stats

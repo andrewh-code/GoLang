@@ -1,10 +1,10 @@
 package leaderboardcontroller
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 	"zz_goparity/app/phase1/leaderboard/leaderboardmodel"
 	"zz_goparity/utilities/prettyprint"
 )
@@ -18,6 +18,7 @@ func LeaderBoardTest(w http.ResponseWriter, r *http.Request) {
 	var player leaderboardmodel.Player
 	stats := leaderboardmodel.PlayerStats{Goals: 30, Assists: 30, SecondAssists: 7, Defence: 18, Throwaways: 14, Drops: 0}
 
+	player.LastUpdated = time.Now().Unix()
 	player.TucID = 47736
 	player.ID = 1
 	player.FirstName = "Bryan"
@@ -27,7 +28,13 @@ func LeaderBoardTest(w http.ResponseWriter, r *http.Request) {
 	player.TimesTraded = 0
 	player.PlayerStats = &stats
 
-	json.NewEncoder(w).Encode(player)
+	out := prettyprint.PrettyPrintJSON(player)
+	os.Stdout.Write(out)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+
+	//json.NewEncoder(w).Encode(player)
 
 }
 
@@ -45,6 +52,7 @@ func LeaderBoardTestArray(w http.ResponseWriter, r *http.Request) {
 	tempStats.Throwaways = 14
 	tempStats.Drops = 0
 
+	tempPlayer.LastUpdated = time.Now().Unix()
 	tempPlayer.TucID = 47736
 	tempPlayer.ID = 1
 	tempPlayer.FirstName = "Bryan"
@@ -63,6 +71,7 @@ func LeaderBoardTestArray(w http.ResponseWriter, r *http.Request) {
 	tempStats.Throwaways = 17
 	tempStats.Drops = 3
 
+	tempPlayer.LastUpdated = time.Now().Unix()
 	tempPlayer.TucID = 49003
 	tempPlayer.ID = 2
 	tempPlayer.FirstName = "Shawn"
