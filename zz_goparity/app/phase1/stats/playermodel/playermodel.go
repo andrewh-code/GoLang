@@ -1,4 +1,4 @@
-package leaderboardmodel
+package playermodel
 
 // LeaderBoardPlayer - model for the tpl spreadsheet
 type Player struct {
