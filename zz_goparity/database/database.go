@@ -4,10 +4,12 @@ package database
 import (
 	"log"
 
+	"fmt"
+
 	"github.com/globalsign/mgo"
 )
 
-type DBDao struct {
+type DBDaoStruct struct {
 	dbType     string
 	dbServer   string
 	dbPort     string
@@ -16,9 +18,9 @@ type DBDao struct {
 	dbPassword string
 }
 
-var Connection *mgo.Database
+var DBC *mgo.Database
 
-func (db *DBDao) ConnectToDB() {
+func (db *DBDaoStruct) ConnectToDB() (*mgo.Session, error) {
 
 	// sooon, replace with properteis file stuff
 	db.dbType = "mongodb"
@@ -28,11 +30,17 @@ func (db *DBDao) ConnectToDB() {
 	db.dbUserName = ""
 	db.dbPassword = ""
 
-	dbURL := "mongodb://12.0.0.1:27107/"
+	//dbURL := "mongodb://12.0.0.1:27107/"
+	dbURL := "localhost:27017"
 	session, err := mgo.Dial(dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Now connected to mongodb...")
+	//defer session.Close()
+	//fmt.Printf("Closing mongodb connection...")
 
-	Connection = session.DB(db.dbName)
+	//DBC = session.DB(db.dbName)
+
+	return session, err
 }

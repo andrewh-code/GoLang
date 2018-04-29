@@ -30,4 +30,6 @@ func main() {
 	// 	panic(err)
 	// }
 	router.Run(port)
+	fmt.Printf("Now servering...")
+
 }
