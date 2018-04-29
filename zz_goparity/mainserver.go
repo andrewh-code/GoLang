@@ -22,7 +22,8 @@ func main() {
 	router.SetRoutes()
 
 	// initialize database
-	database.DBDao.ConnectToDB()
+	db := &database.DBDao{}
+	db.ConnectToDB()
 
 	// err := http.ListenAndServe(":"+port, router)
 	// if err != nil {

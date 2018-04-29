@@ -28,10 +28,10 @@ func (db *DBDao) ConnectToDB() {
 	db.dbUserName = ""
 	db.dbPassword = ""
 
-	dbURL := "mongodb://localhost:27107"
+	dbURL := "mongodb://12.0.0.1:27107/"
 	session, err := mgo.Dial(dbURL)
 	if err != nil {
-		log.Fatal("Unable to connect to mongodb database...")
+		log.Fatal(err)
 	}
 
 	Connection = session.DB(db.dbName)
