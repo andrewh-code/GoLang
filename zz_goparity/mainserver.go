@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"zz_goparity/database"
 	"zz_goparity/routing"
 )
 
@@ -19,6 +20,9 @@ func main() {
 	router := &routing.Router{}
 	router.InitializeRouter()
 	router.SetRoutes()
+
+	// initialize database
+	database.DBDao.ConnectToDB()
 
 	// err := http.ListenAndServe(":"+port, router)
 	// if err != nil {
