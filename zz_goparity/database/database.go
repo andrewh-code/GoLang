@@ -18,8 +18,6 @@ type DBDaoStruct struct {
 	dbPassword string
 }
 
-//var DBC *mgo.Database
-
 func (db *DBDaoStruct) InitiateDBConnection(properties string) (*mgo.Session, error) {
 
 	// sooon, replace with properteis file stuff
