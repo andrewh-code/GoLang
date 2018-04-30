@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "tucid": 12345,
+        "lastupdated": 1234567890,
+        "firstname": "test1",
+        "lastname": "doe",
+        "salary": "$100,000",
+        "wins": 4.5,
+        "timestraded": 1,
+        "stats":{
+            "goals": 1,
+            "assists": 2,
+            "secondassists": 3,
+            "defence": 4,
+            "throwaways": 5,
+            "drops": 6
+        }
+    },
+    {
+        "id": 1,
+        "tucid": 12345,
+        "lastupdated": 1234567890,
+        "firstname": "test2",
+        "lastname": "doe",
+        "salary": "$200,000",
+        "wins": 4.5,
+        "timestraded": 5,
+        "stats":{
+            "goals": 3,
+            "assists": 1,
+            "secondassists": 6,
+            "defence": 8,
+            "throwaways": 1,
+            "drops": 0
+        }
+    }
+]
